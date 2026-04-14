@@ -6,16 +6,13 @@
     <title>AssetPilot</title>
     
     <!-- PWA -->
-<link rel="apple-touch-icon" href="https://i.postimg.cc/8CrBQ8jz/bank-1f3e6.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/8CrBQ8jz/bank-1f3e6.png">
+    <meta name="theme-color" content="#5C4F45">
 
-<meta name="theme-color" content="#5C4F45">
-
-<!-- iOS -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AssetPilot">
-
-<link rel="apple-touch-icon" href="/icon-192.png">
+    <!-- iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AssetPilot">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -23,23 +20,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         
         :root {
-            --bg-base: #F4F1EA;       /* 低飽和度米灰背景 */
+            --bg-base: #F4F1EA;
             --bg-card: rgba(255, 255, 255, 0.95);
-            --text-main: #433830;     /* 深咖啡色文字 */
-            --text-muted: #8A7F75;    /* 淺咖啡色備註 */
-            --border-color: #E6E1D8;  /* 柔和邊框 */
-            --accent-btn: #5C4F45;    /* 按鈕底色 */
+            --text-main: #433830;
+            --text-muted: #8A7F75;
+            --border-color: #E6E1D8;
+            --accent-btn: #5C4F45;
             --accent-hover: #433830;  
-            --profit-up: #C48282;     /* 低飽和紅(賺) */
-            --profit-down: #7FA474;   /* 低飽和綠(賠) */
-            --emoji-bg: #D4C6BF;      /* 指定的 Emoji 背景淡色 */
+            --profit-up: #C48282;
+            --profit-down: #7FA474;
         }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
-            /* 針對全螢幕 APP 的環境優化，防止彈跳滾動 */
             overscroll-behavior-y: contain;
         }
         
@@ -62,9 +57,11 @@
         .input-group {
             background-color: #FAF8F5;
             border: 1.5px solid var(--border-color);
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem; /* 稍微加大內距方便點擊 */
             border-radius: 12px;
             transition: border-color 0.2s;
+            display: flex;
+            align-items: center;
         }
         
         .input-group:focus-within {
@@ -78,6 +75,15 @@
             width: 100%;
             color: var(--text-main);
             font-weight: 500;
+            font-size: 16px; /* 防止 iOS 縮放 */
+            min-height: 24px;
+        }
+
+        /* 優化手機端日期輸入框樣式 */
+        input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            min-width: 100%;
         }
 
         label {
@@ -151,12 +157,6 @@
             transition: transform 0.2s, background 0.2s;
         }
 
-        .fab:hover { 
-            transform: scale(1.08); 
-            background: var(--accent-hover);
-        }
-
-        /* 置頂表頭樣式 */
         .sticky-header th {
             font-size: 0.9rem !important;
             font-weight: 700 !important;
@@ -179,71 +179,59 @@
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .text-main { color: var(--text-main); }
-        .text-muted { color: var(--text-muted); }
-        .border-subtle { border-color: var(--border-color); }
     </style>
 </head>
 <body>
 
     <div class="max-w-6xl mx-auto px-4 py-8">
-        <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
             <div>
-                <h1 class="text-4xl font-black text-main tracking-tight">AssetPilot</h1>
-                <p class="text-muted font-medium mt-1">資產配置管家</p>
+                <h1 class="text-4xl font-black text-[#433830] tracking-tight">AssetPilot</h1>
+                <p class="text-[#8A7F75] font-medium mt-1">資產配置管家</p>
             </div>
-            <div class="glass-card clickable-card px-8 py-5 min-w-[260px] border-l-8" style="border-left-color: #8C7A6B;" onclick="openHistoryModal()" title="點擊查看/新增資產紀錄">
+            <div class="glass-card clickable-card px-8 py-5 min-w-[260px] border-l-8" style="border-left-color: #8C7A6B;" onclick="openHistoryModal()">
                 <div class="flex justify-between items-center mb-1">
-                    <div class="text-[11px] text-muted font-bold uppercase tracking-widest">預估總資產 (TWD)</div>
-                    <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <div class="text-[11px] text-[#8A7F75] font-bold uppercase tracking-widest">預估總資產 (TWD)</div>
+                    <svg class="w-4 h-4 text-[#8A7F75]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </div>
-                <div id="grand-total" class="text-4xl font-black font-mono text-main">$ 0</div>
+                <div id="grand-total" class="text-4xl font-black font-mono text-[#433830]">$ 0</div>
             </div>
         </header>
 
-        <!-- 圖表與 2x2 統計區 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10 items-stretch">
-            <!-- 左側：圖表 -->
             <div class="lg:col-span-5 glass-card p-8 flex flex-col items-center justify-center relative min-h-[400px]">
-                <h3 class="text-sm font-bold mb-6 text-muted uppercase tracking-widest">資產分布比例</h3>
+                <h3 class="text-sm font-bold mb-6 text-[#8A7F75] uppercase tracking-widest">資產分布比例</h3>
                 <div class="w-full h-[280px] relative">
                     <canvas id="assetChart"></canvas>
-                    <div id="empty-chart-label" class="absolute inset-0 flex items-center justify-center text-muted font-bold pointer-events-none hidden text-lg">
+                    <div id="empty-chart-label" class="absolute inset-0 flex items-center justify-center text-[#8A7F75] font-bold pointer-events-none hidden text-lg">
                         尚未新增資產
                     </div>
                 </div>
             </div>
-
-            <!-- 右側：2x2 統計卡片 -->
-            <div class="lg:col-span-7 grid grid-cols-2 gap-4" id="stats-grid">
-                <!-- 由 JS 動態注入 4 個卡片 -->
-            </div>
+            <div class="lg:col-span-7 grid grid-cols-2 gap-4" id="stats-grid"></div>
         </div>
     </div>
 
-    <!-- 懸浮按鈕：新增 -->
-    <div class="fab" onclick="openSelectorModal()" title="新增紀錄">
+    <div class="fab" onclick="openSelectorModal()">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
     </div>
 
     <!-- 選擇種類 Modal -->
     <div id="selectorModal" class="modal-overlay" onclick="closeModal(event, 'selectorModal')">
         <div class="modal-content p-8">
-            <h3 class="text-2xl font-bold mb-6 text-center text-main">請選擇資產種類</h3>
+            <h3 class="text-2xl font-bold mb-6 text-center text-[#433830]">請選擇資產種類</h3>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="openEntryModal('twd')" class="p-6 border-2 border-subtle rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
-                    <span class="text-3xl block mb-2">🏦</span><span class="font-bold text-main">台幣存款</span>
+                <button onclick="openEntryModal('twd')" class="p-6 border-2 border-[#E6E1D8] rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
+                    <span class="text-3xl block mb-2">🏦</span><span class="font-bold text-[#433830]">台幣存款</span>
                 </button>
-                <button onclick="openEntryModal('fc')" class="p-6 border-2 border-subtle rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
-                    <span class="text-3xl block mb-2">💵</span><span class="font-bold text-main">外幣資產</span>
+                <button onclick="openEntryModal('fc')" class="p-6 border-2 border-[#E6E1D8] rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
+                    <span class="text-3xl block mb-2">💵</span><span class="font-bold text-[#433830]">外幣資產</span>
                 </button>
-                <button onclick="openEntryModal('stock')" class="p-6 border-2 border-subtle rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
-                    <span class="text-3xl block mb-2">📈</span><span class="font-bold text-main">證券投資</span>
+                <button onclick="openEntryModal('stock')" class="p-6 border-2 border-[#E6E1D8] rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
+                    <span class="text-3xl block mb-2">📈</span><span class="font-bold text-[#433830]">證券投資</span>
                 </button>
-                <button onclick="openEntryModal('gold')" class="p-6 border-2 border-subtle rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
-                    <span class="text-3xl block mb-2">✨</span><span class="font-bold text-main">黃金存摺</span>
+                <button onclick="openEntryModal('gold')" class="p-6 border-2 border-[#E6E1D8] rounded-2xl hover:border-[#8C7A6B] hover:bg-[#FAF8F5] transition-all text-center">
+                    <span class="text-3xl block mb-2">✨</span><span class="font-bold text-[#433830]">黃金存摺</span>
                 </button>
             </div>
         </div>
@@ -252,21 +240,18 @@
     <!-- 列表 Modal -->
     <div id="listModal" class="modal-overlay" onclick="closeModal(event, 'listModal')">
         <div class="modal-content list-modal-content p-0">
-            <div class="px-8 py-6 bg-white border-b border-subtle flex justify-between items-center z-20">
-                <h3 id="listModalTitle" class="text-2xl font-bold text-main">資產列表</h3>
-                <button onclick="document.getElementById('listModal').style.display='none'" class="text-muted hover:text-main transition-colors">
+            <div class="px-8 py-6 bg-white border-b border-[#E6E1D8] flex justify-between items-center z-20">
+                <h3 id="listModalTitle" class="text-2xl font-bold text-[#433830]">資產列表</h3>
+                <button onclick="document.getElementById('listModal').style.display='none'" class="text-[#8A7F75] hover:text-[#433830]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            
             <div class="overflow-y-auto overflow-x-auto flex-1 no-scrollbar relative bg-white">
                 <table class="w-full min-w-[700px] border-collapse">
                     <thead id="table-head" class="sticky-header"></thead>
                     <tbody id="list-body" class="divide-y divide-[#E6E1D8] text-center"></tbody>
                 </table>
-                <div id="empty-list-msg" class="py-24 text-center text-muted font-bold text-xl hidden">
-                    目前尚無紀錄
-                </div>
+                <div id="empty-list-msg" class="py-24 text-center text-[#8A7F75] font-bold text-xl hidden">目前尚無紀錄</div>
             </div>
         </div>
     </div>
@@ -275,8 +260,8 @@
     <div id="entryModal" class="modal-overlay" onclick="closeModal(event, 'entryModal')">
         <div class="modal-content p-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 id="entryTitle" class="text-2xl font-bold text-main">新增紀錄</h3>
-                <button onclick="document.getElementById('entryModal').style.display='none'" class="text-muted hover:text-main transition-colors">
+                <h3 id="entryTitle" class="text-2xl font-bold text-[#433830]">新增紀錄</h3>
+                <button onclick="document.getElementById('entryModal').style.display='none'" class="text-[#8A7F75] hover:text-[#433830]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -292,32 +277,28 @@
     <!-- 歷史紀錄 Modal -->
     <div id="historyModal" class="modal-overlay" onclick="closeModal(event, 'historyModal')">
         <div class="modal-content list-modal-content p-0" style="max-width: 800px;">
-            <div class="px-8 py-6 bg-white border-b border-subtle flex justify-between items-center z-20">
+            <div class="px-8 py-6 bg-white border-b border-[#E6E1D8] flex justify-between items-center z-20">
                 <div>
-                    <h3 class="text-2xl font-bold text-main">總資產追蹤</h3>
-                    <p class="text-sm text-muted mt-1">記錄並追蹤您的財富成長</p>
+                    <h3 class="text-2xl font-bold text-[#433830]">總資產追蹤</h3>
+                    <p class="text-sm text-[#8A7F75] mt-1">記錄並追蹤您的財富成長</p>
                 </div>
-                <button onclick="document.getElementById('historyModal').style.display='none'" class="text-muted hover:text-main transition-colors">
+                <button onclick="document.getElementById('historyModal').style.display='none'" class="text-[#8A7F75] hover:text-[#433830]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            
             <div class="p-6 bg-[#FAF8F5]">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-                    <div class="text-lg font-bold text-main">當下總計: <span id="current-total-display" class="text-2xl font-mono text-main ml-2">$ 0</span></div>
+                    <div class="text-lg font-bold text-[#433830]">當下總計: <span id="current-total-display" class="text-2xl font-mono ml-2">$ 0</span></div>
                     <button onclick="saveHistoryRecord()" class="btn-primary py-2 px-6 text-sm flex items-center gap-2 whitespace-nowrap">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                         記錄當下資產
                     </button>
                 </div>
-                <div class="w-full h-[250px] bg-white rounded-xl p-4 border border-subtle shadow-sm relative">
+                <div class="w-full h-[250px] bg-white rounded-xl p-4 border border-[#E6E1D8] shadow-sm relative">
                     <canvas id="historyChart"></canvas>
-                    <div id="empty-history-chart" class="absolute inset-0 flex items-center justify-center text-muted font-bold text-sm pointer-events-none hidden">
-                        尚無歷史紀錄
-                    </div>
+                    <div id="empty-history-chart" class="absolute inset-0 flex items-center justify-center text-[#8A7F75] font-bold text-sm pointer-events-none hidden">尚無歷史紀錄</div>
                 </div>
             </div>
-
             <div class="overflow-y-auto flex-1 no-scrollbar bg-white">
                 <table class="w-full border-collapse">
                     <thead class="sticky-header">
@@ -325,15 +306,12 @@
                     </thead>
                     <tbody id="history-body" class="divide-y divide-[#E6E1D8] text-center"></tbody>
                 </table>
-                <div id="empty-history-msg" class="py-12 text-center text-muted font-bold text-lg hidden">
-                    目前尚無紀錄，點擊上方按鈕建立第一筆！
-                </div>
+                <div id="empty-history-msg" class="py-12 text-center text-[#8A7F75] font-bold text-lg hidden">目前尚無紀錄</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 資料版本管理與初始化
         let assets = JSON.parse(localStorage.getItem('finance_v10_refined')) || [];
         let historyData = JSON.parse(localStorage.getItem('finance_history_v1')) || [];
         let chart = null;
@@ -342,23 +320,23 @@
         const CONFIG = {
             twd: { title: "🏦 台幣存款", fields: [
                 { id: 'date', label: '更新日期', type: 'date' },
-                { id: 'name', label: '銀行', type: 'text', placeholder: '' },
-                { id: 'value', label: '存款金額 (TWD)', type: 'number', placeholder: '0' },
-                { id: 'note', label: '備註', type: 'text', placeholder: '' }
+                { id: 'name', label: '銀行', type: 'text' },
+                { id: 'value', label: '存款金額 (TWD)', type: 'number' },
+                { id: 'note', label: '備註', type: 'text' }
             ]},
             fc: { title: "💵 外幣資產", fields: [
                 { id: 'date', label: '更新日期', type: 'date' },
-                { id: 'bank', label: '持有銀行', type: 'text', placeholder: '' },
-                { id: 'currency', label: '外幣幣別', type: 'text', placeholder: '' },
-                { id: 'fVal', label: '外幣金額', type: 'number', placeholder: '0' },
-                { id: 'rate', label: '當前匯率', type: 'number', step: '0.001', placeholder: '' },
-                { id: 'cost', label: '購入成本 (TWD)', type: 'number', placeholder: '當初換匯成本' },
+                { id: 'bank', label: '持有銀行', type: 'text' },
+                { id: 'currency', label: '外幣幣別', type: 'text' },
+                { id: 'fVal', label: '外幣金額', type: 'number' },
+                { id: 'rate', label: '當前匯率', type: 'number', step: '0.001' },
+                { id: 'cost', label: '購入成本 (TWD)', type: 'number' },
                 { id: 'note', label: '備註', type: 'text' }
             ]},
             stock: { title: "📈 證券投資", fields: [
                 { id: 'date', label: '更新日期', type: 'date' },
                 { id: 'name', label: '證券戶', type: 'text' },
-                { id: 'cat', label: '投資分類', type: 'text', placeholder: '' },
+                { id: 'cat', label: '投資分類', type: 'text' },
                 { id: 'cost', label: '投入成本 (TWD)', type: 'number' },
                 { id: 'value', label: '目前市值 (TWD)', type: 'number' },
                 { id: 'note', label: '備註', type: 'text' }
@@ -382,12 +360,16 @@
             document.getElementById('edit-id').value = editId || '';
             document.getElementById('entryTitle').innerText = (editId ? '編輯 ' : '新增 ') + CONFIG[type].title.substring(2);
 
+            const today = new Date().toISOString().split('T')[0];
             const formFields = document.getElementById('form-fields');
             formFields.innerHTML = CONFIG[type].fields.map(f => `
                 <div>
                     <label>${f.label}</label>
                     <div class="input-group">
-                        <input type="${f.type}" id="field-${f.id}" step="${f.step || '1'}" placeholder="${f.placeholder || ''}">
+                        <input type="${f.type}" id="field-${f.id}" 
+                               step="${f.step || '1'}" 
+                               ${f.type === 'date' ? `value="${today}"` : ''}
+                               onclick="${f.type === 'date' ? 'this.showPicker ? this.showPicker() : null' : ''}">
                     </div>
                 </div>
             `).join('');
@@ -417,55 +399,28 @@
                 head.innerHTML = '';
             } else {
                 emptyMsg.classList.add('hidden');
-                
                 if (type === 'twd') {
                     head.innerHTML = `<tr><th>日期</th><th>銀行</th><th>金額</th><th>備註</th><th>管理</th></tr>`;
                     filtered.forEach(a => {
-                        body.innerHTML += `<tr>
-                            <td class="font-mono text-muted text-xs">${a.date || '-'}</td>
-                            <td class="font-bold text-main">${a.name}</td>
-                            <td class="font-bold text-main text-lg">$ ${(a.value||0).toLocaleString()}</td>
-                            <td class="text-muted text-sm">${a.note || '-'}</td>
-                            <td>${actionBtns(a.id, 'twd')}</td>
-                        </tr>`;
+                        body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.name}</td><td class="font-bold text-lg">$ ${(a.value||0).toLocaleString()}</td><td class="text-muted text-sm">${a.note || '-'}</td><td>${actionBtns(a.id, 'twd')}</td></tr>`;
                     });
                 } else if (type === 'fc') {
                     head.innerHTML = `<tr><th>日期</th><th>銀行(幣別)</th><th>市值(TWD)</th><th>損益</th><th>備註</th><th>管理</th></tr>`;
                     filtered.forEach(a => {
                         const market = a.fVal * a.rate;
                         const diff = market - a.cost;
-                        body.innerHTML += `<tr>
-                            <td class="font-mono text-muted text-xs">${a.date || '-'}</td>
-                            <td class="font-bold text-main">${a.bank} <span class="text-xs text-muted font-normal ml-1">${a.currency}</span></td>
-                            <td class="font-bold text-main text-lg">$ ${Math.round(market).toLocaleString()}</td>
-                            <td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'} text-sm">${diff >= 0 ? '+' : ''}${Math.round(diff).toLocaleString()}</td>
-                            <td class="text-muted text-sm">${a.note || '-'}</td>
-                            <td>${actionBtns(a.id, 'fc')}</td>
-                        </tr>`;
+                        body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.bank} <span class="text-xs text-muted font-normal">${a.currency}</span></td><td class="font-bold text-lg">$ ${Math.round(market).toLocaleString()}</td><td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'}">${diff >= 0 ? '+' : ''}${Math.round(diff).toLocaleString()}</td><td class="text-muted text-sm">${a.note || '-'}</td><td>${actionBtns(a.id, 'fc')}</td></tr>`;
                     });
                 } else if (type === 'stock') {
                     head.innerHTML = `<tr><th>日期</th><th>標的</th><th>總成本</th><th>總市值</th><th>損益</th><th>管理</th></tr>`;
                     filtered.forEach(a => {
                         const diff = a.value - a.cost;
-                        body.innerHTML += `<tr>
-                            <td class="font-mono text-muted text-xs">${a.date || '-'}</td>
-                            <td class="font-bold text-main">${a.name}</td>
-                            <td class="text-muted text-sm">$ ${a.cost.toLocaleString()}</td>
-                            <td class="font-bold text-main text-lg">$ ${a.value.toLocaleString()}</td>
-                            <td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'} text-sm">${diff >= 0 ? '+' : ''}${diff.toLocaleString()}</td>
-                            <td>${actionBtns(a.id, 'stock')}</td>
-                        </tr>`;
+                        body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.name}</td><td class="text-muted text-sm">$ ${a.cost.toLocaleString()}</td><td class="font-bold text-lg">$ ${a.value.toLocaleString()}</td><td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'}">${diff >= 0 ? '+' : ''}${diff.toLocaleString()}</td><td>${actionBtns(a.id, 'stock')}</td></tr>`;
                     });
                 } else if (type === 'gold') {
                     head.innerHTML = `<tr><th>日期</th><th>重量</th><th>購入成本</th><th>備註</th><th>管理</th></tr>`;
                     filtered.forEach(a => {
-                        body.innerHTML += `<tr>
-                            <td class="font-mono text-muted text-xs">${a.date || '-'}</td>
-                            <td class="font-bold text-main text-lg">${a.weight} g</td>
-                            <td class="font-bold text-main">$ ${a.cost.toLocaleString()}</td>
-                            <td class="text-muted text-sm">${a.note || '-'}</td>
-                            <td>${actionBtns(a.id, 'gold')}</td>
-                        </tr>`;
+                        body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold text-lg">${a.weight} g</td><td class="font-bold">$ ${a.cost.toLocaleString()}</td><td class="text-muted text-sm">${a.note || '-'}</td><td>${actionBtns(a.id, 'gold')}</td></tr>`;
                     });
                 }
             }
@@ -489,11 +444,7 @@
             assets.push(newItem);
             localStorage.setItem('finance_v10_refined', JSON.stringify(assets));
             document.getElementById('entryModal').style.display = 'none';
-            
-            const listModal = document.getElementById('listModal');
-            if (listModal.style.display === 'flex') {
-                openListModal(type);
-            }
+            if (document.getElementById('listModal').style.display === 'flex') openListModal(type);
             render();
         }
 
@@ -502,10 +453,7 @@
                 const type = assets.find(a => a.id == id).type;
                 assets = assets.filter(a => a.id != id);
                 localStorage.setItem('finance_v10_refined', JSON.stringify(assets));
-                
-                if (document.getElementById('listModal').style.display === 'flex') {
-                    openListModal(type);
-                }
+                if (document.getElementById('listModal').style.display === 'flex') openListModal(type);
                 render();
             }
         }
@@ -518,10 +466,8 @@
                 if (a.type === 'stock') tStock += a.value || 0;
                 if (a.type === 'gold') { gW += a.weight || 0; gC += a.cost || 0; }
             });
-
             const total = tTWD + tFC + tStock;
             document.getElementById('grand-total').innerText = `$ ${Math.round(total).toLocaleString()}`;
-
             updateStatsGrid(tTWD, tFC, tStock, gW, gC);
             updateChart(tTWD, tFC, tStock);
         }
@@ -534,27 +480,23 @@
                 { type: 'stock', label: '證券市值', val: `$ ${Math.round(stock).toLocaleString()}`, color: 'bg-[#D5E7F6]', icon: '📈' },
                 { type: 'gold', label: '黃金紀錄', val: `${gw.toFixed(2)}g / $${gc.toLocaleString()}`, color: 'bg-[#F8EFD8]', icon: '✨' }
             ];
-
-           grid.innerHTML = data.map(d => `
+            grid.innerHTML = data.map(d => `
                 <div onclick="openListModal('${d.type}')" class="glass-card clickable-card p-6 flex flex-col justify-between items-center text-center">
                     <div class="flex flex-col items-center">
-                        <div class="w-10 h-10 ${d.color} text-white rounded-full flex items-center justify-center text-xl mb-3 shadow-inner">
-                            ${d.icon}
-                        </div>
-                        <div class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1">${d.label}</div>
-                        <div class="text-xl font-black font-mono text-main">${d.val}</div>
+                        <div class="w-10 h-10 ${d.color} text-white rounded-full flex items-center justify-center text-xl mb-3 shadow-inner">${d.icon}</div>
+                        <div class="text-[10px] font-bold text-[#8A7F75] uppercase mb-1">${d.label}</div>
+                        <div class="text-xl font-black font-mono">${d.val}</div>
                     </div>
-                    <div class="mt-4 text-[10px] text-muted opacity-60 font-bold uppercase tracking-widest transition-opacity hover:opacity-100">點擊查看詳情</div>
                 </div>
             `).join('');
         }
 
         function actionBtns(id, type) {
             return `<div class="flex justify-center gap-4">
-                <button onclick="openEntryModal('${type}', ${id})" class="text-muted hover:text-main transition-colors" title="編輯">
+                <button onclick="openEntryModal('${type}', ${id})" class="text-[#8A7F75] hover:text-[#433830]">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                 </button>
-                <button onclick="deleteItem(${id})" class="text-[#C5B3B3] hover:text-[#9A6262] transition-colors" title="刪除">
+                <button onclick="deleteItem(${id})" class="text-[#C5B3B3] hover:text-[#9A6262]">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 </button>
             </div>`;
@@ -564,12 +506,9 @@
             const ctx = document.getElementById('assetChart').getContext('2d');
             const labelEl = document.getElementById('empty-chart-label');
             if (chart) chart.destroy();
-            
             const total = twd + fc + stock;
             const hasData = total > 0;
-            
             labelEl.classList.toggle('hidden', hasData);
-
             chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -577,24 +516,14 @@
                     datasets: [{
                         data: hasData ? [twd, fc, stock] : [1, 0, 0],
                         backgroundColor: hasData ? ['#EDCFCE', '#D5ECCB', '#D5E7F6'] : ['#E6E1D8'],
-                        borderWidth: 0,
-                        hoverOffset: hasData ? 15 : 0
+                        borderWidth: 0
                     }]
                 },
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
                     plugins: { 
-                        legend: { 
-                            display: hasData,
-                            position: 'bottom', 
-                            labels: { 
-                                font: { size: 12, family: 'Noto Sans TC', weight: 'bold' },
-                                color: '#433830',
-                                padding: 25,
-                                usePointStyle: true
-                            } 
-                        },
+                        legend: { display: hasData, position: 'bottom' },
                         tooltip: { enabled: hasData }
                     },
                     cutout: '80%'
@@ -622,38 +551,18 @@
             const currentTotal = Math.round(getCurrentTotal());
             const now = new Date();
             const dateStr = now.toLocaleDateString('zh-TW') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-            
             let diff = 0;
             if (historyData.length > 0) {
-                const lastRecord = historyData[historyData.length - 1];
-                diff = currentTotal - lastRecord.amount;
+                diff = currentTotal - historyData[historyData.length - 1].amount;
             }
-
-            const newRecord = {
-                id: Date.now(),
-                date: dateStr,
-                timestamp: now.getTime(),
-                amount: currentTotal,
-                diff: diff
-            };
-
-            historyData.push(newRecord);
-            historyData.sort((a, b) => a.timestamp - b.timestamp);
+            historyData.push({ id: Date.now(), date: dateStr, timestamp: now.getTime(), amount: currentTotal, diff: diff });
             localStorage.setItem('finance_history_v1', JSON.stringify(historyData));
-            
             renderHistory();
         }
 
         function deleteHistoryRecord(id) {
             if(confirm('確定要刪除這筆歷史紀錄嗎？')) {
                 historyData = historyData.filter(h => h.id !== id);
-                for (let i = 0; i < historyData.length; i++) {
-                    if (i === 0) {
-                        historyData[i].diff = 0;
-                    } else {
-                        historyData[i].diff = historyData[i].amount - historyData[i-1].amount;
-                    }
-                }
                 localStorage.setItem('finance_history_v1', JSON.stringify(historyData));
                 renderHistory();
             }
@@ -663,7 +572,6 @@
             const tbody = document.getElementById('history-body');
             const emptyMsg = document.getElementById('empty-history-msg');
             const chartEmpty = document.getElementById('empty-history-chart');
-            
             if (historyData.length === 0) {
                 tbody.innerHTML = '';
                 emptyMsg.classList.remove('hidden');
@@ -671,94 +579,36 @@
                 if (histChart) histChart.destroy();
                 return;
             }
-            
             emptyMsg.classList.add('hidden');
             chartEmpty.classList.add('hidden');
-            
-            tbody.innerHTML = '';
-            const reversedData = [...historyData].reverse();
-            reversedData.forEach(h => {
-                let diffHtml = '<span class="text-muted">-</span>';
-                if (h.diff > 0) diffHtml = `<span class="profit-pos">+$ ${h.diff.toLocaleString()}</span>`;
-                else if (h.diff < 0) diffHtml = `<span class="profit-neg">-$ ${Math.abs(h.diff).toLocaleString()}</span>`;
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="font-mono text-muted text-sm">${h.date}</td>
-                        <td class="font-bold text-main text-lg">$ ${h.amount.toLocaleString()}</td>
-                        <td class="font-bold">${diffHtml}</td>
-                        <td>
-                            <button onclick="deleteHistoryRecord(${h.id})" class="text-[#C5B3B3] hover:text-[#9A6262] transition-colors" title="刪除">
-                                <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-
+            tbody.innerHTML = historyData.slice().reverse().map(h => `
+                <tr>
+                    <td class="font-mono text-muted text-sm">${h.date}</td>
+                    <td class="font-bold text-lg">$ ${h.amount.toLocaleString()}</td>
+                    <td class="font-bold">${h.diff > 0 ? `<span class="profit-pos">+$ ${h.diff.toLocaleString()}</span>` : (h.diff < 0 ? `<span class="profit-neg">-$ ${Math.abs(h.diff).toLocaleString()}</span>` : '-')}</td>
+                    <td><button onclick="deleteHistoryRecord(${h.id})" class="text-[#C5B3B3]">✕</button></td>
+                </tr>
+            `).join('');
             updateHistoryChart();
         }
 
         function updateHistoryChart() {
             const ctx = document.getElementById('historyChart').getContext('2d');
             if (histChart) histChart.destroy();
-
-            const labels = historyData.map(h => h.date.split(' ')[0]);
-            const dataPoints = historyData.map(h => h.amount);
-
             histChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: historyData.map(h => h.date.split(' ')[0]),
                     datasets: [{
                         label: '總資產趨勢',
-                        data: dataPoints,
+                        data: historyData.map(h => h.amount),
                         borderColor: '#8C7A6B',
                         backgroundColor: 'rgba(140, 122, 107, 0.1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#5C4F45',
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
                         fill: true,
                         tension: 0.3
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return '$ ' + context.parsed.y.toLocaleString();
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: { 
-                            beginAtZero: false,
-                            ticks: { font: { family: 'Noto Sans TC' } }
-                        },
-                        x: {
-                            ticks: { font: { family: 'Noto Sans TC' } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // 註冊基礎 Service Worker (為了滿足 PWA 可安裝性)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swContent = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('fetch', (e) => {});
-                `;
-                const blob = new Blob([swContent], { type: 'text/javascript' });
-                const url = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(url).catch(err => console.log('SW registration failed', err));
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
