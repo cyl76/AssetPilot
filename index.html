@@ -2,8 +2,21 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AssetPilot - 質感大地色資產管家</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AssetPilot</title>
+    
+    <!-- PWA 相關設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AssetPilot">
+    
+    <!-- 使用 🏦 作為 App Icon (SVG Data URI) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%235C4F45' rx='20'/><text y='70' x='10' font-size='70'>🏦</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%235C4F45' rx='20'/><text y='70' x='10' font-size='70'>🏦</text></svg>">
+    
+    <!-- Web Manifest 內聯定義 (實現全螢幕與名稱) -->
+    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkFzc2V0UGlsb3Qg6LOH55Si566h5a62IiwKICAic2hvcnRfbmFtZSI6ICJBc3NldFBpbG90IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGNEYxRUEiLAogICJ0aGVtZV9jb3ogIiM1QzRGNDUiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsPHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgZmlsbD0nJTIzNUM0RjQ1JyByeD0nMjAnLz48dGV4dCB5PSc3MCcgeD0nMTAnIGZvbnQtc2l6ZT0nNzAnPuW6pzwvdGV4dD48L3N2Zz4iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
@@ -26,6 +39,8 @@
             font-family: 'Noto Sans TC', sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
+            /* 針對全螢幕 APP 的環境優化，防止彈跳滾動 */
+            overscroll-behavior-y: contain;
         }
         
         .glass-card {
@@ -115,7 +130,7 @@
             max-height: 85vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 由內部容器處理捲動 */
+            overflow: hidden; 
         }
 
         .fab {
@@ -237,7 +252,6 @@
     <!-- 列表 Modal -->
     <div id="listModal" class="modal-overlay" onclick="closeModal(event, 'listModal')">
         <div class="modal-content list-modal-content p-0">
-            <!-- 標題區：純淨白底 -->
             <div class="px-8 py-6 bg-white border-b border-subtle flex justify-between items-center z-20">
                 <h3 id="listModalTitle" class="text-2xl font-bold text-main">資產列表</h3>
                 <button onclick="document.getElementById('listModal').style.display='none'" class="text-muted hover:text-main transition-colors">
@@ -245,7 +259,6 @@
                 </button>
             </div>
             
-            <!-- 列表區：置頂表頭並允許滾動 -->
             <div class="overflow-y-auto overflow-x-auto flex-1 no-scrollbar relative bg-white">
                 <table class="w-full min-w-[700px] border-collapse">
                     <thead id="table-head" class="sticky-header"></thead>
@@ -297,7 +310,6 @@
                         記錄當下資產
                     </button>
                 </div>
-                <!-- 折線圖 -->
                 <div class="w-full h-[250px] bg-white rounded-xl p-4 border border-subtle shadow-sm relative">
                     <canvas id="historyChart"></canvas>
                     <div id="empty-history-chart" class="absolute inset-0 flex items-center justify-center text-muted font-bold text-sm pointer-events-none hidden">
@@ -306,7 +318,6 @@
                 </div>
             </div>
 
-            <!-- 歷史列表 -->
             <div class="overflow-y-auto flex-1 no-scrollbar bg-white">
                 <table class="w-full border-collapse">
                     <thead class="sticky-header">
@@ -517,7 +528,6 @@
 
         function updateStatsGrid(twd, fc, stock, gw, gc) {
             const grid = document.getElementById('stats-grid');
-            // 低飽和度顏色定義
             const data = [
                 { type: 'twd', label: '台幣儲蓄', val: `$ ${Math.round(twd).toLocaleString()}`, color: 'bg-[#EDCFCE]', icon: '🏦' },
                 { type: 'fc', label: '外幣資產', val: `$ ${Math.round(fc).toLocaleString()}`, color: 'bg-[#D5ECCB]', icon: '💵' },
@@ -566,7 +576,6 @@
                     labels: ['台幣', '外幣', '證券'],
                     datasets: [{
                         data: hasData ? [twd, fc, stock] : [1, 0, 0],
-                        // 指定配色: 台幣#D8AEAB 外幣#B9D8AB 證券#B9D8AB
                         backgroundColor: hasData ? ['#EDCFCE', '#D5ECCB', '#D5E7F6'] : ['#E6E1D8'],
                         borderWidth: 0,
                         hoverOffset: hasData ? 15 : 0
@@ -593,8 +602,6 @@
             });
         }
 
-        // --- 總資產歷史紀錄邏輯 ---
-        
         function getCurrentTotal() {
             let tTWD = 0, tFC = 0, tStock = 0;
             assets.forEach(a => {
@@ -616,10 +623,8 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('zh-TW') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
             
-            // 找出前一次紀錄計算差額
             let diff = 0;
             if (historyData.length > 0) {
-                // 陣列最後一個是最新的一筆
                 const lastRecord = historyData[historyData.length - 1];
                 diff = currentTotal - lastRecord.amount;
             }
@@ -633,7 +638,6 @@
             };
 
             historyData.push(newRecord);
-            // 依時間排序確保順序
             historyData.sort((a, b) => a.timestamp - b.timestamp);
             localStorage.setItem('finance_history_v1', JSON.stringify(historyData));
             
@@ -643,8 +647,6 @@
         function deleteHistoryRecord(id) {
             if(confirm('確定要刪除這筆歷史紀錄嗎？')) {
                 historyData = historyData.filter(h => h.id !== id);
-                
-                // 重新計算所有 diff
                 for (let i = 0; i < historyData.length; i++) {
                     if (i === 0) {
                         historyData[i].diff = 0;
@@ -652,7 +654,6 @@
                         historyData[i].diff = historyData[i].amount - historyData[i-1].amount;
                     }
                 }
-                
                 localStorage.setItem('finance_history_v1', JSON.stringify(historyData));
                 renderHistory();
             }
@@ -674,7 +675,6 @@
             emptyMsg.classList.add('hidden');
             chartEmpty.classList.add('hidden');
             
-            // 列表 (反轉顯示，最新的在最上面)
             tbody.innerHTML = '';
             const reversedData = [...historyData].reverse();
             reversedData.forEach(h => {
@@ -696,7 +696,6 @@
                 `;
             });
 
-            // 繪製折線圖
             updateHistoryChart();
         }
 
@@ -704,7 +703,7 @@
             const ctx = document.getElementById('historyChart').getContext('2d');
             if (histChart) histChart.destroy();
 
-            const labels = historyData.map(h => h.date.split(' ')[0]); // 只取日期
+            const labels = historyData.map(h => h.date.split(' ')[0]);
             const dataPoints = historyData.map(h => h.amount);
 
             histChart = new Chart(ctx, {
@@ -747,6 +746,19 @@
                         }
                     }
                 }
+            });
+        }
+
+        // 註冊基礎 Service Worker (為了滿足 PWA 可安裝性)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swContent = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('fetch', (e) => {});
+                `;
+                const blob = new Blob([swContent], { type: 'text/javascript' });
+                const url = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(url).catch(err => console.log('SW registration failed', err));
             });
         }
 
