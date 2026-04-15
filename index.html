@@ -405,17 +405,17 @@
                         body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.name}</td><td class="font-bold text-lg">$ ${(a.value||0).toLocaleString()}</td><td class="text-muted text-sm">${a.note || '-'}</td><td>${actionBtns(a.id, 'twd')}</td></tr>`;
                     });
                 } else if (type === 'fc') {
-                    head.innerHTML = `<tr><th>日期</th><th>銀行(幣別)</th><th>市值(TWD)</th><th>損益</th><th>備註</th><th>管理</th></tr>`;
+                    head.innerHTML = `<tr><th>日期</th><th>銀行</th><th>市值(TWD)</th><th>損益</th><th>備註</th><th>管理</th></tr>`;
                     filtered.forEach(a => {
                         const market = a.fVal * a.rate;
                         const diff = market - a.cost;
                         body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.bank} <span class="text-xs text-muted font-normal">${a.currency}</span></td><td class="font-bold text-lg">$ ${Math.round(market).toLocaleString()}</td><td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'}">${diff >= 0 ? '+' : ''}${Math.round(diff).toLocaleString()}</td><td class="text-muted text-sm">${a.note || '-'}</td><td>${actionBtns(a.id, 'fc')}</td></tr>`;
                     });
                 } else if (type === 'stock') {
-                    head.innerHTML = `<tr><th>日期</th><th>標的</th><th>總成本</th><th>總市值</th><th>損益</th><th>管理</th></tr>`;
+                    head.innerHTML = `<tr><th>日期</th><th>證券戶</th><th>總成本</th><th>總市值</th><th>損益</th><th>管理</th></tr>`;
                     filtered.forEach(a => {
                         const diff = a.value - a.cost;
-                        body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.name}</td><td class="text-muted text-sm">$ ${a.cost.toLocaleString()}</td><td class="font-bold text-lg">$ ${a.value.toLocaleString()}</td><td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'}">${diff >= 0 ? '+' : ''}${diff.toLocaleString()}</td><td>${actionBtns(a.id, 'stock')}</td></tr>`;
+                        body.innerHTML += `<tr><td class="font-mono text-muted text-xs">${a.date || '-'}</td><td class="font-bold">${a.name} <span class="text-xs text-muted font-normal ml-1">${a.cat || ''}</span></td><td class="text-muted text-sm">$ ${a.cost.toLocaleString()}</td><td class="font-bold text-lg">$ ${a.value.toLocaleString()}</td><td class="${diff >= 0 ? 'profit-pos' : 'profit-neg'}">${diff >= 0 ? '+' : ''}${diff.toLocaleString()}</td><td>${actionBtns(a.id, 'stock')}</td></tr>`;
                     });
                 } else if (type === 'gold') {
                     head.innerHTML = `<tr><th>日期</th><th>重量</th><th>購入成本</th><th>備註</th><th>管理</th></tr>`;
